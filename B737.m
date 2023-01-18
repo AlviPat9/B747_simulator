@@ -12,35 +12,50 @@ x_t = 0;
 W = 636636 * Units.lb2kg;
 I = [18200000, 0, -970000; 0, 33100000, 0; -970000, 0, 49700000] * Units.slugft22kgm2;
 M = 0.65;
-x0 = [0, 0, 20000*0.3048];
+x0 = [0; 0; 20000*0.3048];
 atm = atmospheric_model(x0(3));
 v = [atm(4)*0.65, 0, atm(4)*0.65*sind(2.5)];
 % Steady state coeff
 CLs = 0.4; CDs = 0.025; CTs = 0.025;
+fun = @(x)StationaryState(x,x0(3),M);
+x_0 = [0, 0.5, 0];
+[out_tr,F, ~] = fsolve(fun,x_0);
+v = [atm(4)*0.65, 0,atm(4)*0.65*sin(out_tr(1))];
+euler_angles=[0,out_tr(1),0];
 
+Initial_cond = [0;0;0;0;out_tr(1);0;v(1);0;v(3);x0];
+%% Function
+function out=StationaryState(x,h,M)
+%% Trimmer
+%% Vars
+% x(1)=alpha;x(2)=T_lever;x(3)=de;
+alpha=x(1);
+T_lever=x(2);
+de=x(3);
+
+atm = atmospheric_model(h);
 %% Longitudinal coefficients
 % Drag Coefficients
-CD0 = 0.0164; CDu = 0; CD_a = 0.2;
-CT_u = -0.055;
+CD0 = 0.0164;CD_a = -0.0038;
 % Lift Coefficients
-CL0 = 0.21; CL_u = 0.13; CL_a = 4.4;
-CL_ap = 7.0; CL_q = 6.6; CL_de = 0.32;
+CL0 = 0.21;CL_a = 5.9111;CL_de = 0.32;
 % Pitch Coefficients
-Cm_0 = 0; Cm_u = 0.013; Cm_a = -1.0;
-Cm_ap = -4.0; Cm_q = -20.5; Cm_de = -1.3;
+Cm_0 = 0;Cm_a = -2.8536;Cm_de = -1.3;
+%% geometry
+c = 27.3 * 0.3048;
+b = 196 * 0.3048;
+S = 5500 * (0.3048)^2;
+W = 636636 * 0.453592;
 
-%% Lateral-Directional coefficients
-% Side force Coefficients
-CY_b = -0.9; CY_p = 0; CY_r = 0; CY_da = 0;
-CY_dr = 0.120;
-% Roll Coefficients;
-Cl_b = -0.16; Cl_p = -0.34; Cl_r = -0.13;
-Cl_da = 0.013; Cl_dr = 0.008;
-% Yaw Coefficients
-Cn_b = 0.16; Cn_p = -0.026; Cn_r = -0.28;
-Cn_dr = 0.0018; Cn_da = 0.013;
+us = M*atm(4);
+qdyn = 0.5*atm(3)*us^2;
 
-%% Longitudinal mode 
-% Cxu = CT_u(1) - CD_u(1); Czu = -CL_u(1); Cmu = Cm_u(1) - CT_u(1) * z_t;
-% Cxa = CLs(1) - CD_a(1); Cza = -CL_a(1) - CDs(1); Cma = Cm_a(1);
-% Czap = -CL_ap(1); Cmap = 
+T_max=275.8*1000;
+
+T =4*T_max*M*cos(alpha)*T_lever^4;
+D = qdyn * S * (CD0+CD_a*alpha);
+L = qdyn * S * (CL0+CL_a*alpha+CL_de*de);
+out(1) = T+L*sin(alpha)-D*cos(alpha)-W*9.81*sin(alpha);
+out(2) = -L*cos(alpha)-D*sin(alpha)+W*9.81*cos(alpha);
+out(3) = qdyn * S * c * (Cm_a*alpha+Cm_de*de);
+end
