@@ -14,7 +14,7 @@ I = [18200000, 0, -970000; 0, 33100000, 0; -970000, 0, 49700000] * Units.slugft2
 M = 0.65;
 x0 = [0; 0; 20000*0.3048];
 atm = atmospheric_model(x0(3));
-
+v = [atm(4)*0.65, 0, atm(4)*0.65*sind(2.5)];
 % Steady state coeff
 CLs = 0.4; CDs = 0.025; CTs = 0.025;
 fun = @(x)StationaryState(x,x0(3),M);
@@ -50,9 +50,12 @@ W = 636636 * 0.453592;
 us = M*atm(4);
 qdyn = 0.5*atm(3)*us^2;
 
-T_max=275.8*1000;
+T_max= [60600, 11813] * 4.44822;
+alt = [0, 35000]*0.3048;
 
-T =4*T_max*M*cos(alpha)*T_lever;
+T = 4 * interp1(alt,T_max,h) * T_lever;
+
+% T =4*T_max*M*cos(alpha)*T_lever^4;
 D = qdyn * S * (CD0+CD_a*alpha);
 L = qdyn * S * (CL0+CL_a*alpha+CL_de*de);
 out(1) = T+L*sin(alpha)-D*cos(alpha)-W*9.81*sin(alpha);
