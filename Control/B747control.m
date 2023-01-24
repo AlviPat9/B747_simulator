@@ -24,18 +24,23 @@ C.Cn_b = 0.16; C.Cn_p = -0.026; C.Cn_r = -0.28; C.Cn_da = 0.0018; C.Cn_dr = 0.01
 %% Mass properties
 atm = atmospheric_model(C.M);
 % Longitudinal mass properties
-muc = C.mass/(atm(3)*0.5*C.c);
-Iy = C.I(2,2)/(atm(3)*(0.5*C.c)^3);
+muc = C.mass/(atm(3)*C.S*0.5*C.c);
+Iy = C.I(2,2)/(atm(3)*C.S*(0.5*C.c)^3);
 % Lateral mass properties
-mub = C.mass/(atm(3)*0.5*C.b);
-Ix = C.I(1,1)/(atm(3)*(0.5*C.b)^3);
-Iz = C.I(3,3)/(atm(3)*(0.5*C.b)^3);
-Ixz = -C.I(1,3)/(atm(3)*(0.5*C.b)^3);
+mub = C.mass/(atm(3)*C.S*0.5*C.b);
+Ix = C.I(1,1)/(atm(3)*C.S*(0.5*C.b)^3);
+Iz = C.I(3,3)/(atm(3)*C.S*(0.5*C.b)^3);
+Ixz = -C.I(1,3)/(atm(3)*C.S*(0.5*C.b)^3);
 
 %% Stability derivatives calculation
+% Longitudinal modes
 Cx.u=-2*C.CD_s;Cx.aoa=-(C.CL_s-C.CD_a);
 Cz.s=-C.CL_s;Cz.u=0;Cz.aoa=-(C.CL_a+C.CD_s);Cz.q=-C.CL_q;Cz.ap=-C.CL_ap;Cz.de=-C.CL_de;
-Cm.u=-C.Cm_u;Cm.aoa=C.Cm_a;Cm.q=C.Cm_q;Cm.ap=0;Cm.de=C.Cm_de;
+Cm.u=C.Cm_u;Cm.aoa=C.Cm_a;Cm.q=C.Cm_q;Cm.ap=C.Cm_ap;Cm.de=C.Cm_de;
+% Lateral Directional modes
+Cy.b = -0.9; Cy.p = 0.0; Cy.r = 0.0; Cy.da = 0.0; Cy.dr = 0.12;
+Cl.b = -0.16; Cl.p = -0.34; Cl.r = 0.13; Cl.da = 0.013; Cl.dr = 0.008;
+Cn.b = 0.16; Cn.p = -0.026; Cn.r = -0.28; Cn.da = 0.0018; Cn.dr = 0.013;
 
 %% Longitudinal modes
 s=tf('s');
@@ -52,3 +57,39 @@ A_lon = [2*muc*X-Cx.u, -Cx.aoa, -Cz.s;...
 lambda_lon = double(solve(det(A_lon)))/adim_lon;
 wn = [sqrt(real(lambda_lon(1))^2 + imag(lambda_lon(1))^2), sqrt(real(lambda_lon(3))^2 + imag(lambda_lon(3))^2)];
 chi = [-real(lambda_lon(1))/wn(1), -real(lambda_lon(3))/wn(2)];
+
+% Transfer functions of the aircraft
+% Definition of elevator derivatives
+de = [0, Cz.de, Cm.de]';
+G = Alon\de;
+
+%% Lateral directional modes
+%% Longitudinal modes
+adim_lat = C.b/(2*C.M*atm(4));
+Alat = [2*mub*s-Cy.b, -(Cy.p*s-Cz.s), 2*mub-Cy.r;...
+    -Cl.b, Ix*s^2-Cl.p*s, -(Ixz*s+Cl.r);...
+    -Cn.b, -(Ixz*s^2+Cn.p*s), Iz*s-Cn.r];
+
+A_lat = [2*mub*X-Cy.b, -(Cy.p*X-Cz.s), 2*mub-Cy.r;...
+    -Cl.b, Ix*X^2-Cl.p*X, -(Ixz*X+Cl.r);...
+    -Cn.b, -(Ixz*X^2+Cn.p*X), Iz*X-Cn.r];
+
+lambda_lat = double(solve(det(A_lat)))/adim_lat;
+dr = [Cy.dr, Cl.dr, Cn.dr]';
+da = [Cy.da, Cl.da, Cn.da]';
+G_dr = Alat\dr;
+G_da = Alat\da;
+% Autovalor asociado a convergencia en balance -> mayor parte real (no es complejo)
+% Cumple condiciones de convergencia en balance
+
+% Autovalor asociado a modo espiral -> menor parte real (no es complejo)
+% Cumple con T2min (es convergente) -> la amplitud no se duplica
+
+% Dutch roll
+wn_dr = sqrt(real(lambda_lat(2))^2+imag(lambda_lat(2))^2);
+chi_dr = - real(lambda_lat(2))/wn_dr;
+% Requerimientos (caso de mayor restriccion) ->
+% chi_min =0.19; (chi*wn)_min=0.35; wn_min=1.0;
+% Necesidad de aumentar el amortiguamiento, a costa de una disminucion de
+% la frecuencia
+
