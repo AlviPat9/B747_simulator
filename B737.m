@@ -23,7 +23,7 @@ x_0 = [0, 0.5, 0];
 v = [atm(4)*0.65, 0,atm(4)*0.65*sin(out_tr(1))];
 euler_angles=[0,out_tr(1),0];
 
-Initial_cond = [0;0;0;0;out_tr(1);0;v(1);0;v(3);x0];
+Initial_cond = [0;0;0;0;out_tr(1);0;v(1);0;v(1)*sin(0.0461);x0];
 %% Function
 function out=StationaryState(x,h,M)
 %% Trimmer
@@ -36,7 +36,7 @@ de=x(3);
 atm = atmospheric_model(h);
 %% Longitudinal coefficients
 % Drag Coefficients
-CD0 = 0.0164;CD_a = -0.2;
+CD0 = 0.0164;CD_a = 0.2;
 % Lift Coefficients
 CL0 = 0.21;CL_a = 4.4;CL_de = 0.32;
 % Pitch Coefficients
