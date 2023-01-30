@@ -59,6 +59,8 @@ lambda_lon = double(solve(det(A_lon)))/adim_lon;
 wn = [sqrt(real(lambda_lon(1))^2 + imag(lambda_lon(1))^2), sqrt(real(lambda_lon(3))^2 + imag(lambda_lon(3))^2)];
 chi = [-real(lambda_lon(1))/wn(1), -real(lambda_lon(3))/wn(2)];
 
+CAP = wn(2)^2/(Cz.aoa/Cz.s);
+
 % Transfer functions of the aircraft
 % Definition of elevator derivatives
 de = [0, Cz.de, Cm.de]';
