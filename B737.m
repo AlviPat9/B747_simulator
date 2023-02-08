@@ -20,10 +20,10 @@ CLs = 0.4; CDs = 0.025; CTs = 0.025;
 fun = @(x)StationaryState(x,x0(3),M);
 x_0 = [0, 0.5, 0];
 [out_tr,F, ~] = fsolve(fun,x_0);
-v = [atm(4)*0.65, 0,atm(4)*0.65*sin(out_tr(1))];
+v = [atm(4)*0.65*cos(out_tr(1)), 0,atm(4)*0.65*sin(out_tr(1))];
 euler_angles=[0,out_tr(1),0];
 
-Initial_cond = [0;0;0;0;out_tr(1);0;v(1);0;v(1)*sin(0.0461);x0];
+Initial_cond = [0;0;0;0;out_tr(1);0;v(1);0;v(3);x0];
 %% Function
 function out=StationaryState(x,h,M)
 %% Trimmer

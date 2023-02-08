@@ -15,13 +15,13 @@ for i=1:length(F)
 
 lambda_lon_aug = double(solve(P))/adim_lon
 wn_aug = sqrt(real(lambda_lon_aug(1))^2 + imag(lambda_lon_aug(1))^2)
-chi_aug = -real(lambda_lon(1))/wn_aug
+chi_aug = -real(lambda_lon_aug(1))/wn_aug
 CAP_aug = wn_aug^2/(Cz.aoa/Cz.s)
 end
 k = -(F - 1)*Cm.aoa/Cm.de;
 %% Root locus
 for i=1:length(k)
-    F = G_a * G_alpha ;
+    F = G_a * G_alphat;
     H = G_s* k(i);
     G_ol = F*H;
     G_cl = F/(1 + G_ol);

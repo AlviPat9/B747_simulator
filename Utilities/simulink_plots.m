@@ -25,4 +25,6 @@ plot(tout,euler_angles(:,3))
 title('Euler angles')
 grid on
 hold off
-legend({'phi','theta','psi'})
+legend({'\phi','\theta','\psi'})
+xlabel('Time (s)')
+ylabel('Angles (rad)')
