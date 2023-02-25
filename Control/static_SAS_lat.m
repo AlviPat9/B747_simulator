@@ -14,7 +14,7 @@ G_s = (3/10000*s^2-3/100*s+1)/(3/10000*s^2+3/100*s+1);
 %% Aircraft
 G_beta = G_dr(1);
 %% Effect analysis
-F = [1.5, 1.25,1.10,1.05,1];
+F = [-0.5, -0.2, 0, 0.5, 1, 2, 3, 4];
 for i=1:length(F)
 A_lat = [2*mub*X-Cy.b, -(Cy.p*X-Cz.s), 2*mub-Cy.r;...
     -Cl.b, Ix*X^2-Cl.p*X, -(Ixz*X+Cl.r);...

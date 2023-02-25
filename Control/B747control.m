@@ -89,8 +89,8 @@ G_da = Alat\da;
 % Cumple con T2min (es convergente) -> la amplitud no se duplica
 
 % Dutch roll
-wn_dr = sqrt(real(lambda_lat(2))^2+imag(lambda_lat(2))^2);
-chi_dr = - real(lambda_lat(2))/wn_dr;
+wn_dr = sqrt(real(lambda_lat(3))^2+imag(lambda_lat(3))^2);
+chi_dr = - real(lambda_lat(3))/wn_dr;
 % Requerimientos (caso de mayor restriccion) ->
 % chi_min =0.19; (chi*wn)_min=0.35; wn_min=1.0;
 % Necesidad de aumentar el amortiguamiento, a costa de una disminucion de

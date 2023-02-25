@@ -17,15 +17,28 @@ atm = atmospheric_model(x0(3));
 v = [atm(4)*0.65, 0, atm(4)*0.65*sind(2.5)];
 % Steady state coeff
 CLs = 0.4; CDs = 0.025; CTs = 0.025;
-fun = @(x)StationaryState(x,x0(3),M);
 x_0 = [0, 0.5, 0];
+path_ff = 'Engine/FF.csv';
+path_T = 'Engine/Thrust.csv';
+FF = readmatrix(path_ff);
+T_max = readmatrix(path_T);
+h = (0:35000/49:35000) * 0.3048;
+tas = (0:300/49:300) * 3600 / 1852;
+[h, tas] = meshgrid(h,tas);
+h = reshape(h,1,length(h)*length(h));
+tas = reshape(tas,1,length(tas)*length(tas));
+engine = [h', tas', T_max, FF];
+
+T = scatteredInterpolant(h',tas',T_max);
+fun = @(x)StationaryState(x,x0(3),M, T);
+
 [out_tr,F, ~] = fsolve(fun,x_0);
 v = [atm(4)*0.65*cos(out_tr(1)), 0,atm(4)*0.65*sin(out_tr(1))];
 euler_angles=[0,out_tr(1),0];
-
-Initial_cond = [0;0;0;0;out_tr(1);0;v(1);0;v(3);x0];
+lat_lon = [40.97*Units.deg2rad; -5.67*Units.deg2rad];
+Initial_cond = [0;0;0;0;out_tr(1);0;v(1);0;v(3);x0;lat_lon ];
 %% Function
-function out=StationaryState(x,h,M)
+function out=StationaryState(x,h,M,Thrust)
 %% Trimmer
 %% Vars
 % x(1)=alpha;x(2)=T_lever;x(3)=de;
@@ -49,11 +62,7 @@ W = 636636 * 0.453592;
 
 us = M*atm(4);
 qdyn = 0.5*atm(3)*us^2;
-
-T_max= [60600, 11813] * 4.44822;
-alt = [0, 35000]*0.3048;
-
-T = 4 * interp1(alt,T_max,h) * T_lever;
+T = Thrust(h,us) * 1000 * T_lever;
 
 % T =4*T_max*M*cos(alpha)*T_lever^4;
 D = qdyn * S * (CD0+CD_a*alpha);

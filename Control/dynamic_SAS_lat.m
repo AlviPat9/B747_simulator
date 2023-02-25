@@ -21,20 +21,21 @@ G_a = 1/(0.1*s+1);
 %% Sensor
 G_s = (3/10000*s^2-3/100*s+1)/(3/10000*s^2+3/100*s+1);
 %% Filtro wash out
-G_f = (s/10)/(s/10+1);
+G_f = (s*0.005)/(s*0.005+1);
 %% Analysis
-F_r = [0,1.0,1.5,2.0,2.5,3.0];
+F_r = [1.0, 1.5, 2.0];
 
-% for i=1:length(F_r)
-%     A_lat_temp = [2*mub*X-Cy.b, -(Cy.p*X-Cz.s), 2*mub-Cy.r;...
-%     -Cl.b, Ix*X^2-Cl.p*X, -(Ixz*X+Cl.r);...
-%     -Cn.b, -(Ixz*X^2+Cn.p*X), Iz*X-Cn.r*F_r(i)];
-%     temp = double(solve(det(A_lat_temp)))/adim_lat
-%     sqrt(real(temp(3))^2 + imag(temp(3))^2)
-%     -real(temp(3))/ans
-% end
-% 
-% %% Open and closed loop analysis
+for i=1:length(F_r)
+    A_lat_temp = [2*mub*X-Cy.b, -(Cy.p*X-Cz.s), 2*mub-Cy.r;...
+    -Cl.b, Ix*X^2-Cl.p*X, -(Ixz*X+Cl.r);...
+    -Cn.b, -(Ixz*X^2+Cn.p*X), Iz*X-Cn.r*F_r(i)];
+    temp = double(solve(det(A_lat_temp)))/adim_lat
+    wn_aug = sqrt(real(temp(3))^2 + imag(temp(3))^2)
+    chi_aug = -real(temp(3))/wn_aug
+    wn_aug*chi_aug
+end
+
+%% Open and closed loop analysis
 k_dr = -(F_r-1)*Cn.r*C.b/(Cn.dr*us*2);
 
 % for i=1:length(k_dr)
