@@ -17,26 +17,26 @@ atm = atmospheric_model(x0(3));
 v = [atm(4)*0.65, 0, atm(4)*0.65*sind(2.5)];
 % Steady state coeff
 CLs = 0.4; CDs = 0.025; CTs = 0.025;
-x_0 = [0, 0.5, 0];
+x_0 = [0, 0.5, 0, 0];
 path_ff = 'Engine/FF.csv';
 path_T = 'Engine/Thrust.csv';
 FF = readmatrix(path_ff);
 T_max = readmatrix(path_T);
-h = (0:35000/49:35000) * 0.3048;
-tas = (0:300/49:300) * 3600 / 1852;
+h = (0:35000/14:35000) * 0.3048;
+tas = (0:300/14:300) * 3600 / 1852;
 [h, tas] = meshgrid(h,tas);
 h = reshape(h,1,length(h)*length(h));
 tas = reshape(tas,1,length(tas)*length(tas));
 engine = [h', tas', T_max, FF];
-
+save('Engine/Data.mat','engine','-mat')
 T = scatteredInterpolant(h',tas',T_max);
 fun = @(x)StationaryState(x,x0(3),M, T);
 
 [out_tr,F, ~] = fsolve(fun,x_0);
 v = [atm(4)*0.65*cos(out_tr(1)), 0,atm(4)*0.65*sin(out_tr(1))];
 euler_angles=[0,out_tr(1),0];
-lat_lon = [40.97*Units.deg2rad; -5.67*Units.deg2rad];
-Initial_cond = [0;0;0;0;out_tr(1);0;v(1);0;v(3);x0;lat_lon ];
+lat_lon = [40.97; -5.67];
+Initial_cond = [0;0;0;0;out_tr(4);0;v(1);0;v(3);x0;lat_lon ];
 %% Function
 function out=StationaryState(x,h,M,Thrust)
 %% Trimmer
@@ -45,7 +45,8 @@ function out=StationaryState(x,h,M,Thrust)
 alpha=x(1);
 T_lever=x(2);
 de=x(3);
-
+theta = x(4);
+% theta = alpha;
 atm = atmospheric_model(h);
 %% Longitudinal coefficients
 % Drag Coefficients
@@ -61,13 +62,14 @@ S = 5500 * (0.3048)^2;
 W = 636636 * 0.453592;
 
 us = M*atm(4);
+
 qdyn = 0.5*atm(3)*us^2;
 T = Thrust(h,us) * 1000 * T_lever;
 
 % T =4*T_max*M*cos(alpha)*T_lever^4;
 D = qdyn * S * (CD0+CD_a*alpha);
 L = qdyn * S * (CL0+CL_a*alpha+CL_de*de);
-out(1) = T+L*sin(alpha)-D*cos(alpha)-W*9.81*sin(alpha);
-out(2) = -L*cos(alpha)-D*sin(alpha)+W*9.81*cos(alpha);
+out(1) = T+L*sin(alpha)-D*cos(alpha)-W*9.81*sin(theta);
+out(2) = -L*cos(alpha)-D*sin(alpha)+W*9.81*cos(theta);
 out(3) = qdyn * S * c * (Cm_a*alpha+Cm_de*de);
 end
