@@ -17,7 +17,7 @@ atm = atmospheric_model(x0(3));
 v = [atm(4)*0.65, 0, atm(4)*0.65*sind(2.5)];
 % Steady state coeff
 CLs = 0.4; CDs = 0.025; CTs = 0.025;
-x_0 = [0, 0.5, 0, 0];
+x_0 = [0, 0.5, 0];
 path_ff = 'Engine/FF.csv';
 path_T = 'Engine/Thrust.csv';
 FF = readmatrix(path_ff);
@@ -36,7 +36,7 @@ fun = @(x)StationaryState(x,x0(3),M, T);
 v = [atm(4)*0.65*cos(out_tr(1)), 0,atm(4)*0.65*sin(out_tr(1))];
 euler_angles=[0,out_tr(1),0];
 lat_lon = [40.97; -5.67];
-Initial_cond = [0;0;0;0;out_tr(4);0;v(1);0;v(3);x0;lat_lon ];
+Initial_cond = [0;0;0;0;out_tr(3);0;v(1);0;v(3);x0;lat_lon ];
 %% Function
 function out=StationaryState(x,h,M,Thrust)
 %% Trimmer
@@ -45,8 +45,8 @@ function out=StationaryState(x,h,M,Thrust)
 alpha=x(1);
 T_lever=x(2);
 de=x(3);
-theta = x(4);
-% theta = alpha;
+% theta = x(4);
+theta = alpha;
 atm = atmospheric_model(h);
 %% Longitudinal coefficients
 % Drag Coefficients
