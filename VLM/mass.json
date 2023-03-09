@@ -1,0 +1,66 @@
+{
+  "mass_type": "MEAN",
+  "WEIGHT": {
+    "wing": [8767.0, 9240.0],
+    "htp": [844.0, 760.0],
+    "vtp": [490.0, 540],
+    "fuselage": [7280.0, 8724.0],
+    "main_lg": [3116.0, 3057.0],
+    "aux_lg": [2547.0, 0.0],
+    "systems": [7771.0, 0.0],
+    "pylon": [449.0, 897.0],
+    "engine": [6647.0, 5837.0],
+    "nacelle": [2139.0, 0.0],
+    "others": [5727.0, 0.0],
+    "items": [939.0, 5484.0],
+    "payload": [15311.0, 19220.0],
+    "fuel": [12500.0, 18434.0]
+  },
+  "POSITION": {
+    "ENGINE": {
+      "item": ["engine", "nacelle", "pylon"],
+      "position": [11.19, 5.75, 0.0]
+      },
+      "FUSELAGE": {
+        "item": ["fuselage", "systems", "others", "items", "payload"],
+        "position": [0.0, 37.57]
+      },
+      "VTP": {
+        "item": ["vtp"]
+      },
+      "HTP": {
+        "item": ["htp"]
+      },
+      "WING": {
+        "item": ["wing"]
+      },
+      "MAIN_LG": {
+        "item": ["main_lg"],
+        "position": [12.64, 0.0, -2.07]
+      },
+      "AUX_LG": {
+        "item": ["aux_lg"],
+        "position": [5.07, 0.0, -2.07]
+      },
+      "FUEL": {
+        "item": ["fuel"],
+        "tanks": {
+          "tank 1": {
+            "weight_%": 34.58,
+            "position": [3.035, 0.0, 0.0],
+            "symmetry": false
+          },
+          "tank 2": {
+            "weight_%": 29.02,
+            "position": [0.0, 0.0, 0.0],
+            "symmetry": true
+          },
+          "tank 3": {
+            "weight_%": 3.69,
+            "position": [0.0, 0.0, 0.0],
+            "symmetry": true
+        }
+      }
+    }
+  }
+}

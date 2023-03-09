@@ -1,0 +1,131 @@
+{
+  "WING": {
+    "S_ref": 122.4,
+    "c_0": 6.07,
+    "b": 35.8,
+    "sweep": 27.0,
+    "dihedral": 5.0,
+    "apex_loc": [0.0, 0.0, 0.0],
+    "apex_loc_complete": [11.6467, 0.0, 0.0],
+    "control_surface": {
+      "type": "AILERON",
+      "position": 0.7,
+      "deflection":
+              [-10.0]
+    },
+    "Section": {
+      "Section 1": {
+        "taper_0": 1.0,
+        "taper": 0.88,
+        "span_0": 0.0,
+        "span_ratio": 0.11,
+        "airfoil": {
+          "type": "NACA",
+          "code": "23015"
+        },
+        "Nx": 4,
+        "Ny": 2
+      },
+      "Section 2": {
+        "taper_0": 0.88,
+        "taper": 0.62,
+        "span_0": 0.11,
+        "span_ratio": 0.37,
+        "airfoil": {
+          "type": "NACA",
+          "code": "23015"
+        },
+        "Nx": 4,
+        "Ny": 4
+      },
+      "Section 3": {
+        "taper_0": 0.62,
+        "taper": 0.25,
+        "span_0": 0.37,
+        "span_ratio": 1.0,
+        "airfoil": {
+          "type": "NACA",
+          "code": "23015"
+        },
+        "Nx": 4,
+        "Ny": 6
+      }
+    }
+  },
+  "HTP": {
+    "S_ref": 31.0,
+    "b": 12.45,
+    "c_0": 3.31,
+    "sweep": 32.32,
+    "dihedral": 5.0,
+    "apex_loc_complete": [30.8074, 0.0, 0.0],
+    "apex_loc": [19.1607, 0.0, 0.0],
+    "Section": {
+      "Section 1": {
+        "taper_0": 1.0,
+        "taper": 0.35,
+        "span_0": 0.0,
+        "span_ratio": 1.0,
+        "airfoil": {
+          "type": "NACA",
+          "code": "23015"
+        },
+        "Nx": 4,
+        "Ny": 4,
+        "control_surfaces": {
+          "type": "ELEVATOR",
+          "chord_position": 0.8,
+          "positions": [
+            -30,
+            -20,
+            -10,
+            0,
+            10,
+            20,
+            30
+          ],
+          "Nx": 4,
+          "Ny": 2
+        }
+      }
+    }
+  },
+  "VTP": {
+    "S_ref": 21.50,
+    "b": 5.87,
+    "sweep": 40.40,
+    "dihedral": 90.0,
+    "c_0": 3.31,
+    "apex_loc_complete": [30.056, 0.0, 1.975],
+    "apex_loc": [18.4093, 0.0, 1.975],
+    "Section": {
+        "Section 1": {
+            "taper_0": 1.0,
+            "taper": 0.35,
+            "span_0": 0.0,
+            "span_ratio": 1.0,
+            "airfoil": {
+                "type": "NACA",
+                "code": "23015"
+            },
+            "Nx": 4,
+            "Ny": 8,
+            "control_surfaces": {
+                "type": "RUDDER",
+                "chord_position": 0.8,
+                "positions": [
+                    -30,
+                    -20,
+                    -10,
+                    0,
+                    10,
+                    20,
+                    30
+                ],
+                "Nx": 4,
+                "Ny": 2
+            }
+        }
+    }
+  }
+}
